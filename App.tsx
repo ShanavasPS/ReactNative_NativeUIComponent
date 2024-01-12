@@ -10,7 +10,8 @@ import {
   PixelRatio,
     UIManager,
     findNodeHandle,
-    NativeEventEmitter
+    NativeEventEmitter,
+    DeviceEventEmitter
 } from 'react-native';
 
 import {
@@ -18,7 +19,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import {MyViewManager} from './MyViewManager'
-const myViewEventEmitter = new NativeEventEmitter(MyViewManager);
+const eventEmitter = Platform.OS === 'android' ? DeviceEventEmitter : new NativeEventEmitter(MyViewManager);
 
 const createFragment = viewId =>
   UIManager.dispatchViewManagerCommand(
@@ -38,7 +39,7 @@ const ref = useRef(null);
   useEffect(() => {
       const viewId = findNodeHandle(ref.current);
       createFragment(viewId);
-      const subscription = myViewEventEmitter.addListener(
+      const subscription = eventEmitter.addListener(
                   'onRandomTextUpdate',
                   (newRandomText) => {
                       setRandomText(newRandomText);
@@ -76,7 +77,6 @@ const styles = StyleSheet.create({
   myViewManager: {
       width: 800,
       height: 600,
-      backgroundColor: 'red'
     },
     container: {
         flex: 1,
@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
       },
       view1: {
         flex: 1,
-        backgroundColor: 'blue', // Set your desired background color
         height: '100%',
       },
       view2: {
