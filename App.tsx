@@ -43,9 +43,9 @@ const ref = useRef(null);
               <MyViewManager
                 style={{
                   // converts dpi to px, provide desired height
-                  height: PixelRatio.getPixelSizeForLayoutSize(200),
+                  height: PixelRatio.getPixelSizeForLayoutSize(600),
                   // converts dpi to px, provide desired width
-                  width: PixelRatio.getPixelSizeForLayoutSize(200),
+                  width: PixelRatio.getPixelSizeForLayoutSize(400),
                 }}
                 ref={ref}
               />
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
       view1: {
         flex: 1,
         backgroundColor: 'blue', // Set your desired background color
-        // Additional styling for View 1
+        height: '100%',
       },
       view2: {
         height: 100,
