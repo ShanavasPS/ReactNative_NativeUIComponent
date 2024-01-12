@@ -30,24 +30,17 @@ const App = () => {
 const ref = useRef(null);
 
   const isDarkMode = useColorScheme() === 'dark';
-
+  const result = 72;
   useEffect(() => {
       const viewId = findNodeHandle(ref.current);
       createFragment(viewId);
     }, []);
 
   return (
-    <SafeAreaView>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic">
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <MyViewManager
+          <View style={styles.container}>
+            {/* View 1: Takes up the rest of the space */}
+            <View style={styles.view1}>
+              <MyViewManager
                 style={{
                   // converts dpi to px, provide desired height
                   height: PixelRatio.getPixelSizeForLayoutSize(200),
@@ -56,11 +49,17 @@ const ref = useRef(null);
                 }}
                 ref={ref}
               />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+            </View>
+
+            {/* View 2: Fixed height at the bottom */}
+            <View style={styles.view2}>
+              <Text style={styles.centeredText}>
+              Result on RN Side: {result}
+              </Text>
+            </View>
+          </View>
+    );
+  };
 
 const styles = StyleSheet.create({
   myViewManager: {
@@ -68,6 +67,32 @@ const styles = StyleSheet.create({
       height: 600,
       backgroundColor: 'red'
     },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between', // Align items with space between them
+        alignItems: 'flex-start',
+        height: '100%',
+      },
+      view1: {
+        flex: 1,
+        backgroundColor: 'blue', // Set your desired background color
+        // Additional styling for View 1
+      },
+      view2: {
+        height: 100,
+        width: '100%',
+        justifyContent: 'center',
+            alignItems: 'center',
+        // Additional styling for View 2
+      },
+      centeredText: {
+          textAlign: 'center',
+          textAlignVertical: 'center',
+          fontSize: 20,
+         fontWeight: 'bold',
+          // Additional styling for text if needed
+        },
 });
 
 export default App;
