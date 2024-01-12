@@ -8,8 +8,12 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import java.util.Random
+import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContext
 
-class CustomView(context: Context) : FrameLayout(context) {
+
+class CustomView(context: Context, private val reactContext: ReactContext) : FrameLayout(context) {
     init {
         // set padding and background color
         setPadding(16,16,16,16)
@@ -30,13 +34,13 @@ class CustomView(context: Context) : FrameLayout(context) {
             bottomMargin = 50 // 50-pixel margin at the bottom
         })
 
-
         // add first button
         val button1 = Button(context).apply {
             text = "Generate"
             setOnClickListener {
                 randomValue = Random().nextInt(100) + 1 // Generates a random number between 1 and 100
                 textView.text = "$randomValue"
+
             }
         }
         contentContainer.addView(button1)
@@ -45,7 +49,9 @@ class CustomView(context: Context) : FrameLayout(context) {
         val button2 = Button(context).apply {
             text = "Send to RN"
             setOnClickListener {
-                // Handle button click for Button 2
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit("onRandomTextUpdate", randomValue)
             }
         }
         contentContainer.addView(button2)

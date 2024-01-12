@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContext
 // replace with your view's import
 import com.displaynativeview.CustomView
 
-class MyFragment : Fragment() {
+class MyFragment(private val reactContext: ReactContext) : Fragment() {
     private lateinit var customView: CustomView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        customView = CustomView(requireNotNull(context))
+        customView = CustomView(requireNotNull(context), reactContext)
         return customView // this CustomView could be any view that you want to render
     }
 

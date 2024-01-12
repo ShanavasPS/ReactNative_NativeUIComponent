@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -10,6 +10,7 @@ import {
   PixelRatio,
     UIManager,
     findNodeHandle,
+    NativeEventEmitter
 } from 'react-native';
 
 import {
@@ -17,6 +18,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import {MyViewManager} from './MyViewManager'
+const myViewEventEmitter = new NativeEventEmitter(MyViewManager);
 
 const createFragment = viewId =>
   UIManager.dispatchViewManagerCommand(
@@ -30,10 +32,19 @@ const App = () => {
 const ref = useRef(null);
 
   const isDarkMode = useColorScheme() === 'dark';
+  const [randomText, setRandomText] = useState("0");
+
   const result = 72;
   useEffect(() => {
       const viewId = findNodeHandle(ref.current);
       createFragment(viewId);
+      const subscription = myViewEventEmitter.addListener(
+                  'onRandomTextUpdate',
+                  (newRandomText) => {
+                      setRandomText(newRandomText);
+                  }
+              );
+      return () => subscription.remove();
     }, []);
 
   return (
@@ -54,7 +65,7 @@ const ref = useRef(null);
             {/* View 2: Fixed height at the bottom */}
             <View style={styles.view2}>
               <Text style={styles.centeredText}>
-              Result on RN Side: {result}
+              Result on RN Side: {randomText}
               </Text>
             </View>
           </View>
