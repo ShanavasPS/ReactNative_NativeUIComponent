@@ -7,13 +7,14 @@ import android.widget.TextView
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
+import java.util.Random
 
 class CustomView(context: Context) : FrameLayout(context) {
     init {
         // set padding and background color
         setPadding(16,16,16,16)
         setBackgroundColor(Color.parseColor("#5FD3F3"))
-
+        var randomValue = Random().nextInt(100) + 1
         // create a vertical LinearLayout for text and buttons
         val contentContainer = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -22,17 +23,20 @@ class CustomView(context: Context) : FrameLayout(context) {
 
         // add default text view to the LinearLayout
         val textView = TextView(context).apply {
-            text = "Welcome to Android Fragments with React Native."
+            text = "$randomValue"
             gravity = android.view.Gravity.CENTER
         }
-        contentContainer.addView(textView)
+        contentContainer.addView(textView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+            bottomMargin = 50 // 50-pixel margin at the bottom
+        })
 
 
         // add first button
         val button1 = Button(context).apply {
             text = "Generate"
             setOnClickListener {
-                // Handle button click for Button 1
+                randomValue = Random().nextInt(100) + 1 // Generates a random number between 1 and 100
+                textView.text = "$randomValue"
             }
         }
         contentContainer.addView(button1)
