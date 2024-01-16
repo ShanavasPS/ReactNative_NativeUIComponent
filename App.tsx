@@ -1,45 +1,26 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  PixelRatio,
-  UIManager,
-  findNodeHandle,
-  NativeEventEmitter,
-  DeviceEventEmitter,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
 
-import {MyViewManager} from './MyViewManager';
-const eventEmitter =
-  Platform.OS === 'android'
-    ? DeviceEventEmitter
-    : new NativeEventEmitter(MyViewManager);
-
-const createFragment = viewId =>
-  UIManager.dispatchViewManagerCommand(
-    viewId,
-    // we are calling the 'create' command
-    UIManager.MyViewManager.Commands.create.toString(),
-    [viewId],
-  );
+import { StyleSheet, View, PixelRatio, Text } from 'react-native';
+import MyViewManager from './MyViewManager';
+import { DeviceEventEmitter, Platform } from 'react-native';
 
 const App = () => {
-  const ref = useRef(null);
-
   const [randomText, setRandomText] = useState('0');
 
-  useEffect(() => {
-    const viewId = findNodeHandle(ref.current);
-    createFragment(viewId);
-    const subscription = eventEmitter.addListener(
-      'onRandomTextUpdate',
-      newRandomText => {
-        setRandomText(newRandomText);
-      },
-    );
-    return () => subscription.remove();
-  }, []);
+  const eventEmitter =
+  Platform.OS === 'android'
+    ? DeviceEventEmitter
+    : DeviceEventEmitter;
+
+    useEffect(() => {
+      const subscription = eventEmitter.addListener(
+        'onRandomTextUpdate',
+        newRandomText => {
+          setRandomText(newRandomText);
+        },
+      );
+      return () => subscription.remove();
+    }, [eventEmitter]);
 
   return (
     <View style={styles.container}>
@@ -47,12 +28,9 @@ const App = () => {
       <View style={styles.view1}>
         <MyViewManager
           style={{
-            // converts dpi to px, provide desired height
             height: PixelRatio.getPixelSizeForLayoutSize(600),
-            // converts dpi to px, provide desired width
             width: PixelRatio.getPixelSizeForLayoutSize(400),
           }}
-          ref={ref}
         />
       </View>
 
@@ -65,14 +43,10 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  myViewManager: {
-    width: 800,
-    height: 600,
-  },
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between', // Align items with space between them
+    justifyContent: 'space-between',
     alignItems: 'flex-start',
     height: '100%',
   },
@@ -85,14 +59,12 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    // Additional styling for View 2
   },
   centeredText: {
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    // Additional styling for text if needed
   },
 });
 
