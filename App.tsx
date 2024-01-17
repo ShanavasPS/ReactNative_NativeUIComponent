@@ -10,8 +10,8 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 
-import AndroidView from './AndroidView';
-import IOSView from './IOSView';
+import AndroidView from './src/AndroidView';
+import IOSView from './src/IOSView';
 
 const {RTEEventEmitter} = NativeModules;
 
