@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactPropGroup
+import com.displaynativeview.R
 
 class MyViewManager(
     private val reactContext: ReactApplicationContext
@@ -28,7 +29,10 @@ class MyViewManager(
     /**
      * Map the "create" command to an integer
      */
-    override fun getCommandsMap() = mapOf("create" to COMMAND_CREATE)
+    override fun getCommandsMap() = mapOf(
+        "create" to COMMAND_CREATE,
+        "sendToNative" to COMMAND_SEND_TO_NATIVE
+    )
 
     /**
      * Handle "create" command (called from JS) and call createFragment method
@@ -40,9 +44,14 @@ class MyViewManager(
     ) {
         super.receiveCommand(root, commandId, args)
         val reactNativeViewId = requireNotNull(args).getInt(0)
+        var tab = "Home"
+        if(args.size() >= 2) {
+            tab = args.getString(1)
+        }
 
         when (commandId.toInt()) {
             COMMAND_CREATE -> createFragment(root, reactNativeViewId)
+            COMMAND_SEND_TO_NATIVE -> sendToNative(reactNativeViewId, tab)
         }
     }
 
@@ -65,6 +74,16 @@ class MyViewManager(
             .beginTransaction()
             .replace(reactNativeViewId, myFragment, reactNativeViewId.toString())
             .commit()
+    }
+
+    fun sendToNative(reactNativeViewId: Int, tab: String) {
+        val fragment = findFragment(reactNativeViewId)
+        fragment?.receiveFromReactNative(tab)
+    }
+
+    private fun findFragment(reactNativeViewId: Int): MyFragment? {
+        val activity = reactContext.currentActivity as? FragmentActivity
+        return activity?.supportFragmentManager?.findFragmentByTag(reactNativeViewId.toString()) as? MyFragment
     }
 
     fun setupLayout(view: View) {
@@ -95,5 +114,7 @@ class MyViewManager(
     companion object {
         private const val REACT_CLASS = "MyViewManager"
         private const val COMMAND_CREATE = 1
+        private const val COMMAND_SEND_TO_NATIVE = 2;
+
     }
 }

@@ -19,6 +19,10 @@ class MyFragment(private val reactContext: ReactContext) : Fragment() {
         return customView // this CustomView could be any view that you want to render
     }
 
+    fun receiveFromReactNative(tab: String) {
+        customView.modifyButton1Text(tab);
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // do any logic that should happen in an `onCreate` method, e.g:

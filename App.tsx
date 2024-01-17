@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
+
 import {
   StyleSheet,
   View,
@@ -8,6 +9,7 @@ import {
   Platform,
   NativeModules,
   NativeEventEmitter,
+  TouchableOpacity,
 } from 'react-native';
 
 import AndroidView from './src/AndroidView';
@@ -17,6 +19,7 @@ const {RTEEventEmitter} = NativeModules;
 
 const App = () => {
   const [randomText, setRandomText] = useState('0');
+  const ref = useRef<any>(null);
 
   useEffect(() => {
     const eventEmitter =
@@ -35,12 +38,16 @@ const App = () => {
     return () => subscription.remove();
   }, []);
 
+  const handleButtonPress = (tab: string) => {
+    ref.current?.sendToNative(tab);
+  };
+
   return (
     <View style={styles.container}>
       {/* View 1: Takes up the rest of the space */}
       <View style={styles.view1}>
         {Platform.OS === 'android' ? (
-          <AndroidView style={styles.androidView} />
+          <AndroidView style={styles.androidView} ref={ref}/>
         ) : (
           <IOSView style={styles.iosView} />
         )}
@@ -49,6 +56,31 @@ const App = () => {
       {/* View 2: Fixed height at the bottom */}
       <View style={styles.view2}>
         <Text style={styles.centeredText}>Result on RN Side: {randomText}</Text>
+        <View style={styles.bottomBar}>
+          <TouchableOpacity
+            style={styles.bottomBarButton}
+            onPress={() => handleButtonPress('Home')}>
+            <Text style={styles.bottomBarButtonText}>Home</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.bottomBarButton}
+            onPress={() => handleButtonPress('Feed')}>
+            <Text style={styles.bottomBarButtonText}>Feed</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.bottomBarButton}
+            onPress={() => handleButtonPress('Activity')}>
+            <Text style={styles.bottomBarButtonText}>Activity</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.bottomBarButton}
+            onPress={() => handleButtonPress('Profile')}>
+            <Text style={styles.bottomBarButtonText}>Profile</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -91,6 +123,26 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    top: 20,
+    marginBottom: 20,
+  },
+  bottomBarButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#3498db', // Adjust the button background color as needed
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  bottomBarButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
