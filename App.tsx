@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, PixelRatio, Text, DeviceEventEmitter, Platform  } from 'react-native';
 
-import { StyleSheet, View, PixelRatio, Text } from 'react-native';
-import MyViewManager from './MyViewManager';
-import { DeviceEventEmitter, Platform } from 'react-native';
+import AndroidView from './AndroidView';
 
 const App = () => {
   const [randomText, setRandomText] = useState('0');
@@ -26,12 +25,7 @@ const App = () => {
     <View style={styles.container}>
       {/* View 1: Takes up the rest of the space */}
       <View style={styles.view1}>
-        <MyViewManager
-          style={{
-            height: PixelRatio.getPixelSizeForLayoutSize(600),
-            width: PixelRatio.getPixelSizeForLayoutSize(400),
-          }}
-        />
+        <AndroidView style={styles.androidView} />
       </View>
 
       {/* View 2: Fixed height at the bottom */}
@@ -49,6 +43,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     height: '100%',
+  },
+  androidView: {
+    height: PixelRatio.getPixelSizeForLayoutSize(600),
+    width: PixelRatio.getPixelSizeForLayoutSize(400),
   },
   view1: {
     flex: 1,

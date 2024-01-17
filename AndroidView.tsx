@@ -5,7 +5,7 @@ interface MyViewManagerProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const MyViewManager = ({ style }: MyViewManagerProps) => {
+const AndroidView = ({ style }: MyViewManagerProps) => {
   const ref = useRef<any>(null);
 
   const createFragment = (viewId: number | null) => {
@@ -26,4 +26,4 @@ const MyViewManager = ({ style }: MyViewManagerProps) => {
 
 const MyViewManagerNative = requireNativeComponent<MyViewManagerProps>('MyViewManager'); // Ensure correct typing
 
-export default MyViewManager;
+export default AndroidView;
