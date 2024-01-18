@@ -2,6 +2,7 @@ import UIKit
 
 @objc(IOSViewManager)
 class IOSViewManager : RCTViewManager {
+  let title = UILabel(frame: CGRect.zero)
   let label = UILabel(frame: CGRect.zero)
   let button1 = UIButton(type: .system)
   let button2 = UIButton(type: .system)
@@ -13,11 +14,17 @@ class IOSViewManager : RCTViewManager {
   func createCustomView() -> UIView {
     let containerView = UIView()
 
+    title.text = "Home"
+    title.translatesAutoresizingMaskIntoConstraints = false
+    title.textColor = UIColor.black
+    title.textAlignment = .center
+    title.font = UIFont.boldSystemFont(ofSize: 24.0)
+
     buttonTapped()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.textColor = UIColor.black
     label.textAlignment = .center
-    label.font = UIFont.boldSystemFont(ofSize: 24.0)
+    label.font = UIFont.systemFont(ofSize: 16.0)
 
     button1.setTitle("Generate Number", for: .normal)
     button1.translatesAutoresizingMaskIntoConstraints = false
@@ -35,12 +42,17 @@ class IOSViewManager : RCTViewManager {
     button2.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
     button2.addTarget(self, action: #selector(button2Tapped), for: .touchUpInside)
 
+    containerView.addSubview(title)
     containerView.addSubview(label)
     containerView.addSubview(button1)
     containerView.addSubview(button2)
 
     NSLayoutConstraint.activate([
-      label.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+      title.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+      title.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
+      title.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
+
+      label.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 40),
       label.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
       label.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
 
@@ -67,6 +79,12 @@ class IOSViewManager : RCTViewManager {
 
   override class func requiresMainQueueSetup() -> Bool {
     return true
+  }
+
+  @objc func sendToNative(_ node: NSNumber, text: String) {
+    DispatchQueue.main.async {
+      self.title.text = text;
+    }
   }
 }
 

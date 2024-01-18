@@ -49,7 +49,7 @@ const App = () => {
         {Platform.OS === 'android' ? (
           <AndroidView style={styles.androidView} ref={ref}/>
         ) : (
-          <IOSView style={styles.iosView} />
+          <IOSView style={styles.iosView} ref={ref} />
         )}
       </View>
 
