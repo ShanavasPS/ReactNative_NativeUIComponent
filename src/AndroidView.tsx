@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { UIManager, findNodeHandle, requireNativeComponent, ViewStyle, StyleProp } from 'react-native';
 
-interface MyViewManagerProps {
+interface AndroidViewProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const AndroidView = forwardRef<any, {style: StyleProp<ViewStyle>}>((props, ref) => {
+const ANDROID_VIEW_MANAGER: string = "MyViewManager";
+const CREATE_COMMAND: string = "create";
+const SEND_TO_NATIVE_COMMAND: string = "sendToNative";
+
+const AndroidView = forwardRef<any, AndroidViewProps>((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     sendToNative,
@@ -17,17 +21,17 @@ const AndroidView = forwardRef<any, {style: StyleProp<ViewStyle>}>((props, ref) 
     const viewId = findNodeHandle(componentRef.current);
     UIManager.dispatchViewManagerCommand(
       viewId,
-      UIManager.getViewManagerConfig('MyViewManager').Commands[command].toString(),
+      UIManager.getViewManagerConfig(ANDROID_VIEW_MANAGER).Commands[command].toString(),
       [viewId, ...params],
     );
   }
 
   const sendToNative = (tab: string) => {
-    dispatchToAndroid('sendToNative', [tab]);
+    dispatchToAndroid(SEND_TO_NATIVE_COMMAND, [tab]);
   }
 
   const createFragment = () => {
-    dispatchToAndroid('create');
+    dispatchToAndroid(CREATE_COMMAND);
   };
 
   useEffect(() => {
@@ -37,6 +41,6 @@ const AndroidView = forwardRef<any, {style: StyleProp<ViewStyle>}>((props, ref) 
   return <MyViewManagerNative style={props.style} ref={componentRef} />;
 });
 
-const MyViewManagerNative = requireNativeComponent<MyViewManagerProps>('MyViewManager'); // Ensure correct typing
+const MyViewManagerNative = requireNativeComponent<AndroidViewProps>(ANDROID_VIEW_MANAGER);
 
 export default AndroidView;
